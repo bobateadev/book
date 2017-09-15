@@ -32,15 +32,16 @@ for i in `ls -F | grep /` ; do
       python .pre-commit-hooks/convert_markdown_into_html.py $i/README.md
       python .pre-commit-hooks/convert_markdown_into_html.py $i/README.cn.md
       mkdir $directory_name/$i
-      cp $i/index.html $directory_name/$i
-      cp $i/index.cn.html $directory_name/$i
+      mv $i/index.html $directory_name/$i
+      mv $i/index.cn.html $directory_name/$i
       cp -r $i/image $directory_name/$i
-      rm $i/index.html
-      rm $i/index.cn.html
     fi
 
-    cp index.html $directory_name/
-    cp index.cn.html $directory_name/
+    python .tools/convert_jinja2_into_html.py .tools/templates/index.html.json
+    python .tools/convert_jinja2_into_html.py .tools/templates/index.cn.html.json
+
+    mv .tools/templates/index.html $directory_name/
+    mv .tools/templates/index.cn.html $directory_name/
 
 done
 

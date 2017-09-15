@@ -21,6 +21,8 @@ before_install:
   -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
+  - pip install Jinja2==2.9.5
+  - pip install docopt
   - .travis/deploy.sh
 notifications:
   email:
