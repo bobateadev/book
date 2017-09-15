@@ -18,11 +18,11 @@ addons:
   ssh_known_hosts: 52.76.173.135
 before_install:
   -  sudo pip install -U virtualenv pre-commit pip
+  -  sudo pip install Jinja2==2.9.5
+  -  sudo pip install docopt
   -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
-  - pip install Jinja2==2.9.5
-  - pip install docopt
   - .travis/deploy.sh
 notifications:
   email:
