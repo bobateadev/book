@@ -18,17 +18,17 @@ mkdir $directory_name
 cp -r .tools/ $directory_name/.tools
 
 for i in `ls -F | grep /` ; do
-    should_copy=false
+    should_convert_and_copy=false
     cd $i
 
     if [ -e README.md ] && [ -e README.cn.md ] && [ -d image ]
     then
-        should_copy=true
+        should_convert_and_copy=true
     fi
 
     cd ..
 
-    if $should_copy ; then
+    if $should_convert_and_copy ; then
       python .pre-commit-hooks/convert_markdown_into_html.py $i/README.md
       python .pre-commit-hooks/convert_markdown_into_html.py $i/README.cn.md
       mkdir $directory_name/$i
