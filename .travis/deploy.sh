@@ -21,7 +21,7 @@ for i in `ls -F | grep /` ; do
     should_copy=false
     cd $i
 
-    if [ -e index.html ] && [ -e index.cn.html ] && [ -d image ]
+    if [ -e README.md ] && [ -e README.cn.md ] && [ -d image ]
     then
         should_copy=true
     fi
@@ -29,10 +29,14 @@ for i in `ls -F | grep /` ; do
     cd ..
 
     if $should_copy ; then
+      python .pre-commit-hooks/convert_markdown_into_html.py $i/README.md
+      python .pre-commit-hooks/convert_markdown_into_html.py $i/README.cn.md
       mkdir $directory_name/$i
       cp $i/index.html $directory_name/$i
       cp $i/index.cn.html $directory_name/$i
       cp -r $i/image $directory_name/$i
+      rm $i/index.html
+      rm $i/index.cn.html
     fi
 
     cp index.html $directory_name/
@@ -46,7 +50,7 @@ eval "$(ssh-agent -s)"
 chmod 400 ubuntu.pem
 
 ssh-add ubuntu.pem
-rsync -r build/ ubuntu@52.76.173.135:/tmp/book
+rsync -r build/ ubuntu@52.76.173.135:/var/content/book
 
 rm -rf $directory_name
 
