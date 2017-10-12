@@ -4,8 +4,21 @@ function abort(){
     exit 1
 }
 
-trap 'abort' 0
+if [[ "$TRAVIS_BRANCH" =~ ^v[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-\S*)?$ ]]
+then
+    # Production Deploy
+    echo "Deploying to PROD"
+elif [ "$TRAVIS_BRANCH" == "develop" ]
+then
+    # Development Deploy
+    echo "Deploying to DEVELOP"
+else
+    # All other branches should be ignored
+    echo "Cannot deploy image, invalid branch: $TRAVIS_BRANCH"
+    exit 1
+fi
 
+trap 'abort' 0
 directory_name="build"
 
 if [ -d $directory_name ]
@@ -45,15 +58,38 @@ for i in `ls -F | grep /` ; do
 
 done
 
+### pull PaddlePaddle.org app and run the deploy_documentation command
+# https://github.com/PaddlePaddle/PaddlePaddle.org/archive/transform-deploy-documentation.zip
+
+curl -LOk https://github.com/PaddlePaddle/PaddlePaddle.org/archive/transform-deploy-documentation.zip
+
+unzip transform-deploy-documentation.zip
+
+cd PaddlePaddle.org-transform-deploy-documentation/
+
+cd portal/
+
+sudo pip install -r requirements.txt
+
+mkdir ./tmp
+python manage.py deploy_documentation book $TRAVIS_BRANCH ./tmp
+
+###
+cd ../..
+
 openssl aes-256-cbc -d -a -in ubuntu.pem.enc -out ubuntu.pem -k $DEC_PASSWD
 
 eval "$(ssh-agent -s)"
 chmod 400 ubuntu.pem
 
 ssh-add ubuntu.pem
-rsync -r build/ ubuntu@52.76.173.135:/var/content/book
+rsync -r PaddlePaddle.org-transform-deploy-documentation/portal/tmp/ ubuntu@52.76.173.135:/var/content_staging/docs
 
 rm -rf $directory_name
+
+rm -rf ./tmp
+rm -rf PaddlePaddle.org-transform-deploy-documentation/
+rm -rf transform-deploy-documentation.zip
 
 chmod 644 ubuntu.pem
 rm ubuntu.pem
