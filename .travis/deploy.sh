@@ -84,6 +84,7 @@ chmod 400 ubuntu.pem
 
 ssh-add ubuntu.pem
 rsync -r PaddlePaddle.org-master/portal/tmp/ ubuntu@52.76.173.135:/var/content_staging/docs
+rsync -r PaddlePaddle.org-master/portal/tmp/ ubuntu@52.76.173.135:/var/content/docs
 
 rm -rf $directory_name
 
