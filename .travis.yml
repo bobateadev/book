@@ -25,7 +25,6 @@ before_install:
   -  export TRAVIS_BRANCH=develop # debug purpose
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
-  - .travis/deploy.sh
   # 1:CONTENT_DEC_PASSWD, 2:SOURCE_DIR, 3:VERSION
   - cd ..
   - curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD book $TRAVIS_BRANCH
