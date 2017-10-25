@@ -26,7 +26,7 @@ before_install:
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
   - |
-    cd ..; if [[ "$TRAVIS_BRANCH" == "develop" ]]; then echo "if!!!" && curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else echo "else"; fi;
+    cd ..; if [[ "$TRAVIS_BRANCH" == "develop" ]]; then curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else echo "not develop branch, no deploy"; fi;
 notifications:
   email:
     on_success: change
