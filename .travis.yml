@@ -15,7 +15,7 @@ addons:
       - python-pip
       - python2.7-dev
       - golang
-  ssh_known_hosts: 52.76.173.135
+  ssh_known_hosts: staging.paddlepaddle.org
 before_install:
   -  sudo pip install -U virtualenv pre-commit pip
   -  sudo pip install Jinja2==2.9.5
@@ -23,7 +23,11 @@ before_install:
   -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
-  - .travis/deploy.sh
+  - |
+    export DEPLOY_DOCS_SH=https://raw.githubusercontent.com/PaddlePaddle/PaddlePaddle.org/develop/scripts/deploy/deploy_docs.sh
+    export BOOK_DIR=`pwd`
+    cd ..
+    if [[ "$TRAVIS_BRANCH" == "develop" ]] || [[ "$TRAVIS_BRANCH" =~ ^v[[:digit:]]+\.[[:digit:]]+(\.[[:digit:]]+)?(-\S*)?$ ]]; then curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else echo "not develop branch, no deploy"; fi;
 notifications:
   email:
     on_success: change
