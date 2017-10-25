@@ -20,14 +20,14 @@ before_install:
   -  sudo pip install -U virtualenv pre-commit pip
   -  sudo pip install Jinja2==2.9.5
   -  sudo pip install docopt
-  -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb          # change branch
-  -  export DEPLOY_DOCS_SH=https://raw.githubusercontent.com/PaddlePaddle/PaddlePaddle.org/move_book_conversion_logic_to_PPO_script/scripts/deploy/deploy_docs.sh
-  -  export TRAVIS_BRANCH=develop # debug purpose
+  -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb
+  -  export DEPLOY_DOCS_SH=https://raw.githubusercontent.com/PaddlePaddle/PaddlePaddle.org/develop/scripts/deploy/deploy_docs.sh
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
-  # 1:CONTENT_DEC_PASSWD, 2:SOURCE_DIR, 3:VERSION
   - |
-    curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD book $TRAVIS_BRANCH
+    export BOOK_DIR=`pwd`
+    cd ..
+    if [[ "$TRAVIS_BRANCH" == "move_md_to_html_conversion_to_ppo_script" ]]; then curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else false; fi;
 notifications:
   email:
     on_success: change
