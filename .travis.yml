@@ -22,12 +22,11 @@ before_install:
   -  sudo pip install docopt
   -  GOPATH=/tmp/go go get -u github.com/wangkuiyi/ipynb/markdown-to-ipynb
   -  export DEPLOY_DOCS_SH=https://raw.githubusercontent.com/PaddlePaddle/PaddlePaddle.org/develop/scripts/deploy/deploy_docs.sh
+  -  export BOOK_DIR=`pwd`
 script:
   -  PATH=/tmp/go/bin:$PATH .travis/precommit.sh
   - |
-    export BOOK_DIR=`pwd`
-    cd ..
-    if [[ "$TRAVIS_BRANCH" == "move_md_to_html_conversion_to_ppo_script" ]]; then curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else false; fi;
+    cd ..; if [[ "$TRAVIS_BRANCH" == "move_md_to_html_conversion_to_ppo_script" ]]; then echo "if!!!" && curl $DEPLOY_DOCS_SH | bash -s $CONTENT_DEC_PASSWD $TRAVIS_BRANCH $BOOK_DIR; else echo "else"; fi;
 notifications:
   email:
     on_success: change
